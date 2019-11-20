@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Game admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <form action="/admin" method="post">
+        <p>  <label for="type">type de jeux</label></p>
+        <p>    
+            <select name="type" class="champ">
+            <option value="1">Game one</option>
+            <option value="2">Game 2</option>
+         
+        </select>
+    </p>
+        <p>  
+        <label for="nbcaro">nombre de careau</label></p>
+            <p>  
+            <select name="nbcaro" class="champ" >
+                <option value="4">4</option>
+                <option value="6">6</option>
+                <option value="8">8</option>
+                <option value="10">10</option>
+                <option value="12">12</option>
+                <option value="16">16</option>
+                <option value="18">18</option>
+            </select>
+            </p>
+            <p>  <label for="temps">le temps du jeux</label> </p>
+            <p>  <input type="time" name="temps" id="" class="champ"  min="13:00" max="18:30"></p>
+            <p>  <input type="submit" value="evoye" class="champ"> </p>
+    </form>
+</body>
+</html>
