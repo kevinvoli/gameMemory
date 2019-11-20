@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const relationship = require("mongoose-relationship")
 
 
 SchemaUsers= new mongoose.Schema({
@@ -10,24 +9,26 @@ SchemaUsers= new mongoose.Schema({
  
   SchemaJeuxCree= new mongoose.Schema({
       nom:{type: String},
-      nbcareau:{type: String, default:''},
+      nbcareau:{type: Int32Array, default:''},
       nbniveau:{type: String, default:''},
       description:{type: String, default:''},
       dure:{type:String},
-      nombreNiveau:{type:String},
-      dateDebut:{type:Date},
-      dateFin:{type:Date},
-      Score:[{ type:mongoose.Schema.ObjectId, ref:'jeux-ref' }],
+      dateDebut:{type:String},
+      dateFin:{type:String},
+      image:[{type:mongoose.Schema.ObjectId,ref:'image'}]
   })
 
+  SchemaImage= new mongoose.Schema({
+    image:{type: String},
+})
+
   SchemaJeux= new mongoose.Schema({
-    name:{type:String},
-    debut:{type:Date},
-    duree:{type:Date},
+    debut:{type:Date,default:Date.now() },
     nclick:{type:String},
     niveau: {type:String},
+    niveaufinal:{type:String},
     Users: { type:mongoose.Schema.ObjectId, ref:"User" },
-  
+    Jeux:{type:mongoose.Schema.ObjectId, ref:'jeuxCree-ref'}
   })
   
   exports.User= mongoose.model('User',SchemaUsers) 

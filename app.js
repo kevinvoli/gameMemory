@@ -128,50 +128,53 @@ let info = {},Images = [],resu = [];
 const memory2 = io.of('/game2').use(serveur.getSharedSession());
 
 memory2.on('connection',(socket)=>{
-    console.log('vous pouvez joue')
-    socket.on('startgame',()=>{
+    console.log('vous pouvez joue',socket.handshake.session.user)
+    if(socket.handshake.session.user){
+        socket.on('startgame',()=>{
 
-        if( socket.handshake.session.temp || socket.handshake.session.score ){
-            minut=socket.handshake.session.temp-Math.round(new Date().getTime()/1000)
-            nclick=socket.handshake.session.click
-            info= socket.handshake.session.score
-        }else{
-            socket.handshake.session.temp =  Math.round(new Date().getTime()/1000)+305;
-            socket.handshake.session.save();
-            nclick=0
-            minut=socket.handshake.session.temp-Math.round(new Date().getTime()/1000)
-            info = memoryGame.niveaux[0];
-            console.log(info);
-        }
-        Images = functions.setImage(images,info.nBimage);
-        resu = functions.random(Images,info.params);
-        socket.emit('startgame',resu,info,minut,nclick,texte);
+            if( socket.handshake.session.temp || socket.handshake.session.score ){
+                minut=socket.handshake.session.temp-Math.round(new Date().getTime()/1000)
+                nclick=socket.handshake.session.click
+                info= socket.handshake.session.score
+            }else{
+                socket.handshake.session.temp =  Math.round(new Date().getTime()/1000)+305;
+                socket.handshake.session.save();
+                nclick=0
+                minut=socket.handshake.session.temp-Math.round(new Date().getTime()/1000)
+                info = memoryGame.niveaux[0];
+                console.log(info);
+            }
+            Images = functions.setImage(images,info.nBimage);
+            resu = functions.random(Images,info.params);
+            socket.emit('startgame',resu,info,minut,nclick,texte);
+        });
+        socket.on('gameHover',()=>{
+            delete socket.handshake.session.temp
+            delete socket.handshake.session.score
+            delete socket.handshake.session.click
+            socket.handshake.session.save()
+            socket.emit('gameHover','http://localhost:3000/')
+        })
+
+        socket.on('gesTemp',(data)=>{
+            minut=data
+        })
+
+        socket.on('nextlevel',(data,click)=>{
+            socket.handshake.session.click = click
+            socket.handshake.session.save()
+            nclick+= socket.handshake.session.click
+
+            info = memoryGame.niveaux[data];
+            socket.handshake.session.score = info
+            socket.handshake.session.save()
+            Images = functions.setImage(images,info.nBimage);
+            resu = functions.random(Images,info.params);
+            socket.emit('nextlevel',resu,info);
+        });
+    }
     });
-    socket.on('gameHover',()=>{
-        delete socket.handshake.session.temp
-        delete socket.handshake.session.score
-        delete socket.handshake.session.click
-        socket.handshake.session.save()
-        socket.emit('gameHover','http://localhost:3000/')
-    })
-  
-    socket.on('gesTemp',(data)=>{
-        minut=data
-    })
-
-    socket.on('nextlevel',(data,click)=>{
-        socket.handshake.session.click = click
-        socket.handshake.session.save()
-        nclick+= socket.handshake.session.click
-
-        info = memoryGame.niveaux[data];
-        socket.handshake.session.score = info
-        socket.handshake.session.save()
-        Images = functions.setImage(images,info.nBimage);
-        resu = functions.random(Images,info.params);
-        socket.emit('nextlevel',resu,info);
-    });
-});
+    
 http.listen(3000,()=>{
     console.log("j'écoute sur le port 3000");
 });

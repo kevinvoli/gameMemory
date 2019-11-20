@@ -5,10 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Game admin</title>
-    <link rel="stylesheet" href="/css/admin.css">
+ 
+    <!--===============================================================================================-->	
+    <link rel="icon" type="image/png" href="/statlog/images/icons/favicon.ico"/>
+    <!--===============================================================================================-->
+        <link rel="stylesheet" type="text/css" href="/statlog/vendor/bootstrap/css/bootstrap.min.css">
+    <!--===============================================================================================-->
+        <link rel="stylesheet" type="text/css" href="/statlog/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+        <link rel="stylesheet" type="text/css" href="/statlog/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+    <!--===============================================================================================-->
+        <link rel="stylesheet" type="text/css" href="/statlog/vendor/animate/animate.css">
+    <!--===============================================================================================-->	
+        <link rel="stylesheet" type="text/css" href="/statlog/vendor/css-hamburgers/hamburgers.min.css">
+    <!--===============================================================================================-->
+        <link rel="stylesheet" type="text/css" href="/statlog/vendor/animsition/css/animsition.min.css">
+    <!--===============================================================================================-->
+        <link rel="stylesheet" type="text/css" href="/statlog/vendor/select2/select2.min.css">
+    <!--===============================================================================================-->	
+        <link rel="stylesheet" type="text/css" href="/statlog/vendor/daterangepicker/daterangepicker.css">
+    <!--===============================================================================================-->
+        <link rel="stylesheet" type="text/css" href="/statlog/css/util.css">
+        <link rel="stylesheet" type="text/css" href="/statlog/css/main.css">
+
 </head>
 <body>
-    <form action="/admin" method="post">
+        <div class="limiter">
+                <div class="container-login100">
+        <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-50">
+
+    <form action="/admin" method="post" class="login100-form validate-form">
+        <span class="login100-form-title p-b-33">
+            Inscription
+        </span>
         <p>  <label for="type">type de jeux</label></p>
         <p>    
             <select name="type" class="champ">
@@ -17,10 +46,14 @@
          
         </select>
     </p>
-        <p>  
-        <label for="nbcaro">nombre de careau</label></p>
-            <p>  
-            <select name="nbcaro" class="champ" >
+    <div class="wrap-input100 " >
+            <label for="nom" class="input100"> description</label> 
+                <input class="input100" name="nom" id="" cols="30" rows="10">
+            </div> 
+        <div class="wrap-input100 validate-input" >
+
+            <label for="nbcaro">nombre de careau</label></p>
+            <select name="nbcaro" class="input100" >
                 <option value="4">4</option>
                 <option value="6">6</option>
                 <option value="8">8</option>
@@ -29,10 +62,74 @@
                 <option value="16">16</option>
                 <option value="18">18</option>
             </select>
-            </p>
-            <p>  <label for="temps">le temps du jeux</label> </p>
-            <p>  <input type="time" name="temps" id="" class="champ"  min="13:00" max="18:30"></p>
-            <p>  <input type="submit" value="evoye" class="champ"> </p>
+        </div> 
+        <div class="wrap-input100 " >
+
+            <label for="nbcaro"class="input100" >nombre de niveau</label></p>
+            <select name="niveau" class="input100" >
+                <option value="4">4</option>
+                <option value="6">6</option>
+                <option value="8">8</option>
+                <option value="10">10</option>
+                <option value="12">12</option>
+                <option value="16">16</option>
+                <option value="18">18</option>
+            </select>
+        </div> 
+       
+        <div class="wrap-input100 " >
+           <label for="description" class="input100"> description</label> 
+            <p><textarea class="input100" name="description" id="" cols="30" rows="10"></textarea> </p>
+        </div> 
+        <div class="wrap-input100 " >
+            <label class="input100" for="dure">la dure du jeux</label> 
+             <input type="time" name="dure" id="" class="champ"  >
+        </div>
+
+        <div class="wrap-input100 " >
+            <label class="input100" for="debut">date de debut</label> 
+         <input class="input100"type="datetime-local" name="debut" id="" class="champ" >
+        </div>  
+         
+         <div class="wrap-input100 " >
+
+             <label class="input100" for="fin">date de fin</label>
+            <input class="input100" type="datetime-local" name="fin" id="" class="champ"  >
+         </div> 
+
+
+
+         <div class="container-login100-form-btn m-t-20">
+                <button class="login100-form-btn">
+                    Se connecter
+                        
+                </button>
+            </div>
     </form>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+    <script src="/statlog/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+        <script src="/statlog/vendor/animsition/js/animsition.min.js"></script>
+    <!--===============================================================================================-->
+        <script src="/statlog/vendor/bootstrap/js/popper.js"></script>
+        <script src="/statlog/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+        <script src="/statlog/vendor/select2/select2.min.js"></script>
+    <!--===============================================================================================-->
+        <script src="/statlog/vendor/daterangepicker/moment.min.js"></script>
+        <script src="/statlog/vendor/daterangepicker/daterangepicker.js"></script>
+    <!--===============================================================================================-->
+        <script src="/statlog/vendor/countdowntime/countdowntime.js"></script>
+    <!--===============================================================================================-->
+        <script src="/statlog/js/main.js"></script>
+
 </body>
 </html>

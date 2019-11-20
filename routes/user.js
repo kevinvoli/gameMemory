@@ -2,7 +2,7 @@ const express = require('express');
 const router = new express.Router();
 
 const {gameQueries} = require('../controllers/game.controller');
-const {gameDQueries} = require('../controllers/game.controller');
+const {gameDQueries} = require('../controllers/gameD.controller');
 const {userDQueries} = require('../controllers/userD.controller');
 const {functions} = require('../controllers/random');
 
@@ -49,7 +49,7 @@ router.route('/nan_games/games/:id')
             if(verifIdGame(req.session.game.games,resu.game._id)){
                 res.redirect('/nan_games/games')
             }else{
-                res.render('game', {user:req.session.game,game: resu.game});
+                res.render('game', {user:req.session.game,game: result.game});
             }
 
         }
@@ -58,8 +58,12 @@ router.route('/nan_games/games/:id')
     });
 
 router.route('/game2')
-    .get((req,res)=>{
-       res.render('game2');
+    .get(async(req,res)=>{
+        if (req.session.user) {
+            res.render('game2',{user:req.session.user,jeux:req.session.jeux});
+        } else {
+            res.redirect('/connection')
+        }
     });
 
 const verifIdGame = (tab,game) => {
@@ -90,14 +94,23 @@ router.route('/admin')
 .post(async(req,res)=>{
     console.log(req.body)
     if(req.body.type==='1'){
-        let data={
-            careau:req.body.nbcaro,
-            temps:req.body.temps
-        }
-      let genere=await  gameQueries.setGame(data)
-      res.send(genere)
+     
     }else{
+        console.log(req.body)
+      
+        let data={
+            nom:req.body.nom,
+            nbcareau:req.body.nbcaro,
+            nbniveau:req.body.niveau,
+            description:req.body.description,
+            dure:req.body.dure,
+            dateDebut:req.body.debut,
+            dateFin:req.body.fin,
+        }
 
+        let creeJeux=await  gameDQueries.setGame(req.body)
+        req.session.jeux=creeJeux
+        res.redirect('/connection')
     }
 
 })
@@ -127,6 +140,15 @@ res.render('connection')
     }    
 })
 
+router.route('/connect-admin')
+.get((req,res)=>{  
+    res.render('connection')
+})
+
+router.route('/connect-admin')
+.post((req,res)=>{  
+    res.redirect('/admin')
+})
 
 router.route('/register')
 .get((req,res)=>{
@@ -135,13 +157,15 @@ router.route('/register')
 router.route('/register')
 
 .post(async(req,res)=>{
-    console.log(req.body)
+  
     let data={
         name:req.body.nom,
         password:req.body.password
     }
     console.log(data)
     const result = await userDQueries.setUser(data);
+    console.log("serulttar",data)
+
     res.redirect('/connection')
 })
 

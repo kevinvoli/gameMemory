@@ -1,13 +1,18 @@
 const mongoose = require('mongoose');
-const Game = require('../models/game.model');
+const Game = require('../models/partiDejeux.model').JeucCree;
 const User= require('../models/partiDejeux.model').JeucCree
 exports.gameDQueries = class{
     static setGame(data){
+        console.log(data)
         return new Promise(async next =>{
             const game = await new Game({
-                name : data.name,
-                duree : data.duree,
-                description: data.description
+                nom:data.nom,
+                nbcareau:data.nbcaro,
+                nbniveau:data.niveau,
+                description:data.description,
+                dure:data.dure,
+                dateDebut:data.debut,
+                dateFin:data.fin,
             });
             game.save().then(user=>{
                 next({etat:true,game:game});
