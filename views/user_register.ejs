@@ -20,6 +20,32 @@
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/jquery-3.4.1.min.js"></script>
         <script src="/js/registerScript.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script>
+    
+            const socket= io('http://localhost:3000/user-register')
+            $('.p1').on('submit',(e)=>{
+                e.preventDefault()
+        
+                let	data={
+                    nom:$('#nom').val(),
+                    pseudo:$('#pseudo').val(),
+                    password:$('#password').val(),
+                    email:$('#email').val(),
+                    number:$('#number').val()
+                }
+                socket.emit('inscription',data)
+            })	
+            socket.on('inscription',(data)=>{
+                location.href="/"
+            })
+                
+            
+    </script>
+   
+   
+   
     </body>
 
 </html>

@@ -22,5 +22,26 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/jquery-3.4.1.min.js"></script>
 <script src="/js/loginScript.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+
+    const socket= io('http://localhost:3000/register')
+    $('.validate-form').on('submit',(e)=>{
+        e.preventDefault()
+
+        let	data={
+            nom:$('#name').val(),
+            password:$('#password').val(),
+            
+        }
+        socket.emit('inscription',data)
+    })	
+    socket.on('inscription',(data)=>{
+        location.href="/"
+    })
+        
+    
+</script>
 </body>
 </html>

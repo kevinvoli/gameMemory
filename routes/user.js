@@ -2,6 +2,11 @@ const express = require('express');
 const router = new express.Router();
 
 const {gameQueries} = require('../controllers/game.controller');
+const {gameDQueries} = require('../controllers/game.controller');
+const {userDQueries} = require('../controllers/userD.controller');
+const {functions} = require('../controllers/random');
+
+
 let compt = 0;
 router.route('/user-register')
     .get((req,res)=>{
@@ -40,7 +45,7 @@ router.route('/nan_games/games/:id')
     .get(async (req,res)=>{
         compt += 1;
         if(req.session.game) {
-            const resu = await gameQueries.getGame(req.params.id);
+            const result = await gameQueries.getGame(req.params.id);
             if(verifIdGame(req.session.game.games,resu.game._id)){
                 res.redirect('/nan_games/games')
             }else{
@@ -64,10 +69,23 @@ const verifIdGame = (tab,game) => {
     });
     return false;
 };
+
 router.route('/admin')
 .get((req,res)=>{
     res.render('admin')
 })
+
+router.route('/connect-admin')
+.get((req,res)=>{
+    res.render('connection')
+})
+
+router.route('/connect-admin')
+.post((req,res)=>{
+    res.redirect('/admin')
+})
+
+
 router.route('/admin')
 .post(async(req,res)=>{
     console.log(req.body)
@@ -82,6 +100,35 @@ router.route('/admin')
 
     }
 
+})
+
+router.route('/connection')
+.get((req,res)=>{
+    
+    res.render('connection')
+})
+router.route('/connection')
+.post(async(req,res)=>{
+
+   
+    res.redirect('/game2')
+})
+
+
+router.route('/register')
+.get((req,res)=>{
+    res.render('register')
+})
+router.route('/register')
+
+.post(async(req,res)=>{
+    console.log(req.body)
+    let data={
+        name:req.body.nom,
+        password:req.body.password
+    }
+    const result = await userDQueries.setUser(data);
+    res.redirect('/connection')
 })
 
 module.exports = router;

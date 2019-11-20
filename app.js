@@ -30,7 +30,9 @@ home.on('connection',(socket)=>{
 const register = io.of('/user-register');
 register.on('connection',(socket)=>{
    console.log('user connected');
+   console.log('enregistre toi')
    socket.on('user-register', async (data)=>{
+  
        const resu = await userQueries.setUser(data);
        if(resu.user!= null){
            socket.emit('user-register',resu.user);
