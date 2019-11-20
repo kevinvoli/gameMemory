@@ -3,8 +3,8 @@ const relationship = require("mongoose-relationship")
 
 
 SchemaUsers= new mongoose.Schema({
-    nom:{type: String},
-    password: {type:String,require:true},
+    name:{type:String},
+    password: {type:String,require:true}
     
   })
  

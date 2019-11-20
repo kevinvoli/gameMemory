@@ -126,8 +126,9 @@ let nclick
 let texte='il vous reste moins de cinq minutes'
 let info = {},Images = [],resu = [];
 const memory2 = io.of('/game2').use(serveur.getSharedSession());
+
 memory2.on('connection',(socket)=>{
-    console.log('user connected');
+    console.log('vous pouvez joue')
     socket.on('startgame',()=>{
 
         if( socket.handshake.session.temp || socket.handshake.session.score ){
@@ -157,8 +158,6 @@ memory2.on('connection',(socket)=>{
     socket.on('gesTemp',(data)=>{
         minut=data
     })
-    
-   
 
     socket.on('nextlevel',(data,click)=>{
         socket.handshake.session.click = click

@@ -1,6 +1,6 @@
 const User = require('../models/partiDejeux.model').User;
 
-exports.userQueries = class{
+exports.userDQueries = class{
 
     static setUser(data){
         return new Promise(async next =>{

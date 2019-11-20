@@ -110,8 +110,21 @@ router.route('/connection')
 router.route('/connection')
 .post(async(req,res)=>{
 
-   
-    res.redirect('/game2')
+    console.log(req.body)
+    let data={
+        name:req.body.nom,
+        password:req.body.password
+    }
+    console.log(data)
+    const result = await userDQueries.getUser(data);
+    if(result.etat===false){
+res.render('connection')
+    }
+    else{
+        req.session.user=result.user
+
+        res.redirect('/game2')
+    }    
 })
 
 
@@ -127,6 +140,7 @@ router.route('/register')
         name:req.body.nom,
         password:req.body.password
     }
+    console.log(data)
     const result = await userDQueries.setUser(data);
     res.redirect('/connection')
 })
