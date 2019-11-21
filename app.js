@@ -8,7 +8,12 @@ const http = require('http').createServer(app);
 const {userQueries} = require('./controllers/user.controller');
 const {gameQueries} = require('./controllers/game.controller');
 const {functions} = require('./controllers/random');
-const memoryGame = require('./docs/jeuximages');
+const memoryGame = require('./controllers/parametre.controller').parametreQueries
+
+const {gameDQueries} = require('./controllers/gameD.controller');
+const {userDQueries} = require('./controllers/userD.controller');
+const {partiQueries} = require('./controllers/PartiGame.controller');
+
 
 db();
 
@@ -121,28 +126,46 @@ const images = [
     "mini7.png",
     "mini8.png",
 ];
+
+let parametre= require('./docs/jeuximages')
 let minut;
 let nclick
+let index
 let texte='il vous reste moins de cinq minutes'
 let info = {},Images = [],resu = [];
 const memory2 = io.of('/game2').use(serveur.getSharedSession());
 
-memory2.on('connection',(socket)=>{
+
+memory2.on('connection',async(socket)=>{
+    let jeuxCree= await gameDQueries.getGameOne('moi')
+    console.log(jeuxCree)
+   
     console.log('vous pouvez joue',socket.handshake.session.user)
     if(socket.handshake.session.user){
-        socket.on('startgame',()=>{
-
+        socket.on('startgame',async()=>{
             if( socket.handshake.session.temp || socket.handshake.session.score ){
                 minut=socket.handshake.session.temp-Math.round(new Date().getTime()/1000)
                 nclick=socket.handshake.session.click
                 info= socket.handshake.session.score
             }else{
+                
+                let nouveauJeux= await partiQueries.setGame(jeuxCree,socket.handshake.session.user._id)
+                socket.handshake.session.Jeux=nouveauJeux
+                console.log(nouveauJeux)
                 socket.handshake.session.temp =  Math.round(new Date().getTime()/1000)+305;
                 socket.handshake.session.save();
                 nclick=0
                 minut=socket.handshake.session.temp-Math.round(new Date().getTime()/1000)
-                info = memoryGame.niveaux[0];
-                console.log(info);
+
+                    parametre.niveaux.forEach(niveaux=>{
+                        if (niveaux.nbCase==jeuxCree.game.nbcareau){
+                            console.log(niveaux.niveau);
+                            index =  niveaux.niveau
+                        }
+                    })
+               console.log(index)
+                info = parametre.niveaux[index-1];
+   
             }
             Images = functions.setImage(images,info.nBimage);
             resu = functions.random(Images,info.params);
@@ -160,12 +183,14 @@ memory2.on('connection',(socket)=>{
             minut=data
         })
 
-        socket.on('nextlevel',(data,click)=>{
+        socket.on('nextlevel',async(data,click)=>{
+
+            await  partiQueries.updateGame(data,click,socket.handshake.session.Jeux.game._id)
+
             socket.handshake.session.click = click
             socket.handshake.session.save()
             nclick+= socket.handshake.session.click
-
-            info = memoryGame.niveaux[data];
+            info = parametre.niveaux[data];
             socket.handshake.session.score = info
             socket.handshake.session.save()
             Images = functions.setImage(images,info.nBimage);

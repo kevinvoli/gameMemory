@@ -1,15 +1,19 @@
 const mongoose = require('mongoose');
 const Game = require('../models/partiDejeux.model').Jeux;
 
-exports.gameQueries = class{
+exports.partiQueries = class{
 
-    static setGame(data){
+    static setGame(data, id){
+        console.log(id)
         return new Promise(async next =>{
             const game = await new Game({
-                name : data.name,
-                duree : data.duree,
-                description: data.description
             });
+            game.fin= new Date().setMinutes(new Date().getMinutes()+30);
+            game.nclick= 0
+            game.niveau=1
+            game.niveaufinal=(game.niveau-1)
+            game.Jeux=data.game._id
+            game.Users=id
             game.save().then(user=>{
                 next({etat:true,game:game});
             }).catch(e => {
@@ -37,6 +41,16 @@ exports.gameQueries = class{
             })
         });
     }
+    static updateGame(niveau,click,data){
+        return new Promise(async next => {
+                Game.update({"_id":data},{$set:{"nclick":click,"niveau":niveau}}).then(jeux=>{
+                
+                 jeux.save()
+                }).catch(e => {
+                    next({etat:false,err:e});
+                })
+            });
+        }
 
     static setLevel(data){
         return new Promise(async next =>{

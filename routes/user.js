@@ -94,7 +94,7 @@ router.route('/admin')
 .post(async(req,res)=>{
     console.log(req.body)
     if(req.body.type==='1'){
-     
+     res.send("jeux pas disponible")
     }else{
         console.log(req.body)
       
@@ -110,6 +110,7 @@ router.route('/admin')
 
         let creeJeux=await  gameDQueries.setGame(req.body)
         req.session.jeux=creeJeux
+     
         res.redirect('/connection')
     }
 
@@ -128,7 +129,6 @@ router.route('/connection')
         name:req.body.nom,
         password:req.body.password
     }
-    console.log(data)
     const result = await userDQueries.getUser(data);
     if(result.etat===false){
 res.render('connection')

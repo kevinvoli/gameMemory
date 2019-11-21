@@ -30,6 +30,18 @@ exports.gameDQueries = class{
             })
         });
     }
+    static getGameOne(data){
+        return new Promise(async next => {
+            Game.findOne({nom:data}).then(game=>{
+                next({etat:true,game:game});
+            }).catch(e => {
+                next({etat:false,err:e});
+            })
+        });
+    }
+
+    
+
     static getAllGame(){
         return new Promise(async next => {
             Game.find().then(games=>{

@@ -49,10 +49,7 @@
     let canClick = false,compt = 0,comptIndex = [],validation = 0;
     document.querySelector('button.button').addEventListener('click',()=>{
         document.querySelector('button.button').style.display = "none";
-        let data = {
-            User_id:'<%=user._id %>',
-            User_id:'<%=jeux._id %>',
-        }
+     
         socket.emit('startgame');
     });
     socket.on('startgame',(images,data,temp,click,texte)=>{

@@ -9,8 +9,8 @@ SchemaUsers= new mongoose.Schema({
  
   SchemaJeuxCree= new mongoose.Schema({
       nom:{type: String},
-      nbcareau:{type: Int32Array, default:''},
-      nbniveau:{type: String, default:''},
+      nbcareau:{type: Number, default:''},
+      nbniveau:{type: Number, default:''},
       description:{type: String, default:''},
       dure:{type:String},
       dateDebut:{type:String},
@@ -23,10 +23,11 @@ SchemaUsers= new mongoose.Schema({
 })
 
   SchemaJeux= new mongoose.Schema({
-    debut:{type:Date,default:Date.now() },
-    nclick:{type:String},
-    niveau: {type:String},
-    niveaufinal:{type:String},
+    debut:{type:Date,default: new Date},
+    fin:{type:Date},
+    nclick:{type:Number},
+    niveau: {type:Number},
+    niveaufinal:{type:Number},
     Users: { type:mongoose.Schema.ObjectId, ref:"User" },
     Jeux:{type:mongoose.Schema.ObjectId, ref:'jeuxCree-ref'}
   })
