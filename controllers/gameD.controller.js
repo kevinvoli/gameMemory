@@ -2,41 +2,55 @@ const mongoose = require('mongoose');
 const Game = require('../models/partiDejeux.model').JeucCree;
 const User= require('../models/partiDejeux.model').JeucCree
 exports.gameDQueries = class{
-    static setGame(data){
-        console.log(data)
-        return new Promise(async next =>{
-            const game = await new Game({
-                nom:data.nom,
-                nbcareau:data.nbcaro,
-                estadmin:data.niveau,
-                description:data.description,
-                dure:data.dure,
-                dateDebut:data.debut,
-                dateFin:data.fin,
-            });
-            game.save().then(user=>{
-                next({etat:true,game:game});
-            }).catch(e => {
-                next({etat:false,err:e});
-            });
-        });
-    }
+    // static setGame(data){
+    //     console.log(data)
+    //     return new Promise(async next =>{
+    //         const game = await new Game({
+    //             nom:data.nom,
+    //             nbcareau:data.nbcaro,
+    //             estadmin:data.niveau,
+    //             description:data.description,
+    //             dure:data.dure,
+    //             dateDebut:data.debut,
+    //             dateFin:data.fin,
+    //         });
+    //         game.save().then(user=>{
+    //             next({etat:true,game:game});
+    //         }).catch(e => {
+    //             next({etat:false,err:e});
+    //         });
+    //     });
+    // }
     static getGame(data){
        return new Promise(async next => {
-            Game.findById(data).then(game=>{
+           await mongoose.connection.db.collection('memory_image_game',(err,collection)=>{
+               collection.findById(data).then(game => {
+                    next({etat:true, game:game})
+               }).catch(e => {
+                next({etat:false,err:e});
+            });
+          })
+          /*  Game.findById(data).then(game=>{
                 next({etat:true,game:game});
             }).catch(e => {
                 next({etat:false,err:e});
-            })
+            }) */
         });
     }
     static getGameOne(data){
         return new Promise(async next => {
-            Game.findOne({nom:data}).then(game=>{
+            await mongoose.connection.db.collection('memory_image_game',(err,collection)=>{
+                collection.findOne({nom:data}).then(game=>{
+                    next({etat:true,game:game});
+                }).catch(e => {
+                    next({etat:false,err:e}) ;
+                })
+            })
+          /*  Game.findOne({nom:data}).then(game=>{
                 next({etat:true,game:game});
             }).catch(e => {
                 next({etat:false,err:e});
-            })
+            })*/
         });
     }
 

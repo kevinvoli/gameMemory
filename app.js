@@ -8,20 +8,14 @@ const http = require('http').createServer(app);
 const {userQueries} = require('./controllers/user.controller');
 const {gameQueries} = require('./controllers/game.controller');
 const {functions} = require('./controllers/random');
-const memoryGame = require('./controllers/parametre.controller').parametreQueries
 
 const {gameDQueries} = require('./controllers/gameD.controller');
-const {userDQueries} = require('./controllers/userD.controller');
 const {partiQueries} = require('./controllers/PartiGame.controller');
 
-
 db();
-
 const io = require('socket.io')(http);
-
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
-
 
 const home = io.of('/');
 home.on('connection',(socket)=>{
@@ -30,7 +24,6 @@ home.on('connection',(socket)=>{
         socket.emit('next',data);
     })
 });
-
 
 const register = io.of('/user-register');
 register.on('connection',(socket)=>{
@@ -100,7 +93,6 @@ memory.on('connection',(socket)=>{
         }
     });
 
-
     socket.on('setTentative',async (game_id,niveau)=>{
         console.log(game_id+''+niveau);
         const data = {
@@ -114,7 +106,6 @@ memory.on('connection',(socket)=>{
         }
     });
 });
-
 // memeory 2 //
 const images = [
     "mini1.png",
@@ -126,86 +117,89 @@ const images = [
     "mini7.png",
     "mini8.png",
 ];
-
+let liste = partiQueries.getAllGame()
+console.log("par possible",liste)
 let parametre= require('./docs/jeuximages')
-let minut;
+let temps
+let dure
 let nclick
 let index
-let texte='il vous reste moins de cinq minutes'
+let texte='xamarin est null'
 let info = {},Images = [],resu = [];
 const memory2 = io.of('/game2').use(serveur.getSharedSession());
-
-
 memory2.on('connection',async(socket)=>{
-    let jeuxCree= await gameDQueries.getGameOne('moi')
-    console.log(jeuxCree)
-   
-    console.log('vous pouvez joue',socket.handshake.session.user)
+    let jeuxCree= await gameDQueries.getGameOne('test2')
+    let dure = jeuxCree.game.duree_game.split(':')
+    let duree= parseInt(dure[0])/60+ parseInt(dure[1])
+    console.log('tu est la quoi zooo',jeuxCree)
     if(socket.handshake.session.user){
-       
-
-        
-
         socket.on('startgame',async()=>{
-            let verif= await partiQueries.getOneGame(socket.handshake.session.user._id)
+            let verif= await partiQueries.getOneGame(socket.handshake.session.user.id)
             console.log('verifition de l user',verif)
-
-
             if( socket.handshake.session.temp || socket.handshake.session.score ){
-                minut=socket.handshake.session.temp-Math.round(new Date().getTime()/1000)
+                console.log("OUI JE VOIT",socket.handshake.session.score)
+                temps=socket.handshake.session.temp
                 nclick=socket.handshake.session.click
-                info= socket.handshake.session.score
+                info= parametre.niveaux[verif.game.niveaux]
+                console.log("OUI JE VOIT",temps)
             }else{
-                if (socket.handshake.session.user._id===verif.game.Users) {
-                    socket.handshake.session.Jeux=verif.game
-                    socket.handshake.session.temp =  Math.round(new Date().getTime()/1000)+305;
+                if (verif.etat!==false) {
+                    console.log('une foi de plus sa passe',)
+                    socket.handshake.session.Jeux=verif
+                    socket.handshake.session.temp = {
+                        minutes:new Date( verif.game.date_fin).getMinutes(),
+                        seconds:new Date( verif.game.date_fin).getSeconds()
+                    };
                     socket.handshake.session.save();
                     nclick=verif.game.nclick
-                    minut=socket.handshake.session.temp-Math.round(new Date().getTime()/1000)
-                    info = parametre.niveaux[verif.game.niveau];
-
+                    temps=socket.handshake.session.temp
+                    info = parametre.niveaux[verif.game.niveaux];
                 }else{
-                    let nouveauJeux= await partiQueries.setGame(jeuxCree,socket.handshake.session.user._id)
+
+                    console.log("ICI C;EST LE TEMPS",socket.handshake.session.user.id)
+                    let nouveauJeux= await partiQueries.setGame(jeuxCree.game.id,socket.handshake.session.user.id,duree)
                     socket.handshake.session.Jeux=nouveauJeux
                     console.log(nouveauJeux)
-                    socket.handshake.session.temp =  Math.round(new Date().getTime()/1000)+305;
+                    socket.handshake.session.temp = socket.handshake.session.Jeux.game.date_fin
                     socket.handshake.session.save();
                     nclick=0
-                    minut=socket.handshake.session.temp-Math.round(new Date().getTime()/1000)
-    
+                    temps={
+                        minutes:new Date( socket.handshake.session.temp).getMinutes(),
+                        seconds:new Date( socket.handshake.session.temp).getSeconds()
+                    }
                         parametre.niveaux.forEach(niveaux=>{
-                            if (niveaux.nbCase==jeuxCree.game.nbcareau){
+                            if (niveaux.nbCase==jeuxCree.game.nombre_careaux){
                                 console.log(niveaux.niveau);
                                 index =  niveaux.niveau
                             }
                         })
-                   console.log(index)
                     info = parametre.niveaux[index-1];
                 }
             }
+            console.log(temps)
             Images = functions.setImage(images,info.nBimage);
             resu = functions.random(Images,info.params);
-            socket.emit('startgame',resu,info,minut,nclick,texte);
+            socket.emit('startgame',resu,info,temps,nclick,texte);
         });
         socket.on('gameHover',()=>{
             delete socket.handshake.session.temp
             delete socket.handshake.session.score
             delete socket.handshake.session.click
+            delete socket.handshake.session.Jeux
             socket.handshake.session.save()
             socket.emit('gameHover','http://localhost:3000/')
         })
-        socket.on('updateclick',async(data,click)=>{
-            await  partiQueries.updateClickGame(socket.handshake.session.Jeux.game._id,click)
-
+        socket.on('updateclick',async(click)=>{
+            await  partiQueries.updateClickGame(socket.handshake.session.Jeux.game.id,click)
         })
-
         socket.on('gesTemp',(data)=>{
             minut=data
         })
-
+        let validee=jeuxCree.game.estadmin
+         let valid=0
         socket.on('nextlevel',async(data,click)=>{
-
-            await  partiQueries.updateGame(data,click,socket.handshake.session.Jeux.game._id)
+        console.log(click)
+            await  partiQueries.updateGame(data,click,socket.handshake.session.Jeux.game.id)
             socket.handshake.session.click = click
             socket.handshake.session.save()
             nclick+= socket.handshake.session.click
@@ -214,15 +208,16 @@ memory2.on('connection',async(socket)=>{
             socket.handshake.session.save()
             Images = functions.setImage(images,info.nBimage);
             resu = functions.random(Images,info.params);
+            valid+=1
             socket.emit('nextlevel',resu,info);
-            if(parametre.niveaux.niveau=socket.handshake.session.Jeux.game.estadmin){
-            await  partiQueries.updateAdminGame()
+            if(valid===validee){
+           console.log('tu est admin')
+                await  partiQueries.updateAdminGame(click,socket.handshake.session.Jeux.game.id)
             socket.emit('admin')
             }
         });
     }
     });
-    
 http.listen(3000,()=>{
     console.log("j'écoute sur le port 3000");
 });

@@ -3,27 +3,41 @@ const Game = require('../models/partiDejeux.model').Jeux;
 
 exports.partiQueries = class{
 
-    static setGame(data, id){
+    static setGame(data, id,dure){
         console.log(id)
         return new Promise(async next =>{
-            const game = await new Game({
-            });
-            game.fin= new Date().setMinutes(new Date().getMinutes()+30);
-            game.nclick= 0
-            game.niveau=1
-            game.niveaufinal=(game.niveau-1)
-            game.Jeux=data.game._id
-            game.Users=id
-            game.save().then(user=>{
-                next({etat:true,game:game});
-            }).catch(e => {
-                next({etat:false,err:e});
-            });
+            await mongoose.connection.db.collection('memory_image_resultat',(err,game)=>{
+                game.date_fin= new Date().setMinutes(new Date().getMinutes()+dure);
+                game.nombre_click= 0
+                game.niveaux=1
+                game.niveaux_valide=(game.niveau-1)
+                game.game=data
+                game.user=id
+                game.save().then(user=>{
+                    next({etat:true,game:game});
+                }).catch(e => {
+                    next({etat:false,err:e});
+                });
+            })
+            // const game = await new Game({
+            // });
+            // game.fin= new Date().setMinutes(new Date().getMinutes()+dure);
+            // game.nclick= 0
+            // game.niveau=1
+            // game.niveaufinal=(game.niveau-1)
+            // game.Jeux=data.game._id
+            // game.Users=id
+            // game.save().then(user=>{
+            //     next({etat:true,game:game});
+            // }).catch(e => {
+            //     next({etat:false,err:e});
+            // });
         });
     }
 
     static getGame(data){
-       return new Promise(async next => {
+        return new Promise(async next => {
+            await mongoose.connection.co
             Game.findById(data).then(game=>{
                 next({etat:true,game:game});
             }).catch(e => {
@@ -34,17 +48,30 @@ exports.partiQueries = class{
 
     static getOneGame(data){
         return new Promise(async next => {
-             Game.findOne({Users:data}).then(game=>{
-                 next({etat:true,game:game});
-             }).catch(e => {
-                 next({etat:false,err:e});
-             })
-         });
-     }
+            await mongoose.connection.db.collection('memory_image_resultat',(err,collection)=>{
+                collection.findOne({User:data}).then(game=>{
+                    if (game!==null) {
+                        next({etat:true,game:game});
+                    }
+                    next({etat:false,game:'user non valide'});
+                }).catch(e => {
+                    next({etat:false,err:e});
+                })
+            })
+            // Game.findOne({Users:data}).then(game=>{
+            //     if (game!==null) {
+            //         next({etat:true,game:game});
+            //     }
+            //     next({etat:false,game:'user non valide'});
+            // }).catch(e => {
+            //     next({etat:false,err:e});
+            // })
+        });
+    }
 
     static getAllGame(){
         return new Promise(async next => {
-            Game.find().then(games=>{
+            Game.find().populate('Jeux').then(games=>{
                 next({etat:true,games:games});
             }).catch(e => {
                 next({etat:false,err:e});
@@ -53,8 +80,8 @@ exports.partiQueries = class{
     }
     static updateGame(niveau,click,data){
         return new Promise(async next => {
-                Game.update({"_id":data},{$set:{"nclick":click,"niveau":niveau, 'niveaufinal':data-1}}).then(jeux=>{   
-                 jeux.save()
+                Game.update({"_id":data},{$set:{"nclick":click,"niveau":niveau, 'niveaufinal':niveau-1}}).then(jeux=>{   
+                jeux.save()
                 }).catch(e => {
                     next({etat:false,err:e});
                 })
@@ -69,7 +96,7 @@ exports.partiQueries = class{
                 })
             });
         }
-    static updateAdminGame(){
+    static updateAdminGame(data){
         return new Promise(async next => {
                 Game.update({"_id":data},{$set:{"admis":true}}).then(jeux=>{   
                     jeux.save()
@@ -91,7 +118,7 @@ exports.partiQueries = class{
                 heightDiv: data.heightDiv,
                 widthDiv: data.widthDiv
             };
-           const game = await Game.findById(data.id);
+            const game = await Game.findById(data.id);
             game.levels.push(Niveau);
             console.log(game.levels);
             game.save().then(game=>{

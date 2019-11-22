@@ -35,8 +35,8 @@ SchemaUsers= new mongoose.Schema({
   
   exports.User= mongoose.model('User',SchemaUsers) 
   
-//   SchemaJeuxCree.plugin(relationship,{relationshipPathName:'Score' })
+
   exports.JeucCree=mongoose.model('jeuxCree-ref',SchemaJeuxCree)
 
-//   SchemaJeux.plugin(relationship,{relationshipPathName:'Users'})
+
   exports.Jeux=mongoose.model('jeux-ref',SchemaJeux)

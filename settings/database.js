@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const connection = async () =>{
     try{
-        await mongoose.connect('mongodb://localhost:27017/Game2',{
+        await mongoose.connect('mongodb://51.77.197.177:27017/candidaturenan',{
             useNewUrlParser:true,
             useFindAndModify:false,
             useUnifiedTopology:true

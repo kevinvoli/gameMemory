@@ -131,7 +131,7 @@ router.route('/connection')
     }
     const result = await userDQueries.getUser(data);
     if(result.etat===false){
-res.render('connection')
+    res.render('connection')
     }
     else{
         req.session.user=result.user

@@ -13,7 +13,7 @@
         
     <div class="div_conteneur_page">
             <div id="donne">
-                    <div id="letemp"> </div>
+                    <div id="letemp">    </div>
                     <div id="admis"></div>
                     <div id="nclick"></div>
             </div>
@@ -44,6 +44,7 @@
     const socket = io('http://localhost:3000/game2');
     let all = [];
     let nombreClick
+    let duree
    
     let nclick=document.getElementById('nclick')
     let temps= document.getElementById('letemp')
@@ -56,25 +57,30 @@
         socket.emit('startgame');
     });
     socket.on('startgame',(images,data,temp,click,texte)=>{
+        duree=temp
         nombreClick=click
         nclick.innerText=nombreClick
         console.log(images);
         console.log(data);
         let t = 1000;
+        
       let heure= setInterval(()=>{
-            temps.innerText=temp
-            temp--
-            socket.emit('gesTemp',temp)
-            if(temp<0){
-                clearTimeout(heure) 
-                socket.emit('gameHover')
-                document.location.href='http://localhost:3000/'
-            } if(temp <= 300 && temp>= 295){
-                prevention(texte)
+            if (duree.seconds<0) {
+                duree.seconds=60
+                duree.minutes=duree.minutes-1
+            }else{
+                temp.seconds--
+                socket.emit('gesTemp',temp)
+                if(duree.minutes<=0){
+                    clearTimeout(heure) 
+                    // socket.emit('gameHover')
+                    // document.location.href='http://localhost:3000/'
+                } if(temp <= 300 && temp>= 295){
+                    prevention(texte)
                 
+                }
             }
-           
-       
+            temps.innerText= duree.minutes+':'+ temp.seconds
         },1000);
 
             Global(data.nbCase,data.params,images,data);
@@ -95,6 +101,40 @@
     socket.on('gameHover',(data)=>{
         document.location.href=data
     })
+
+    // function afficheHeure(letemp){
+      
+    //     var min =  letemp.minutes;
+    //     var sec = letemp.seconds;
+    //     heure += ":" + (min > 9? min:"0" + min);
+    //     heure += ":" + (sec > 9? sec:"0" + sec);
+     
+
+    //       let heure= setInterval(()=>{
+    //             temps.innerText=heure
+    //             temp.seconds--
+    //             socket.emit('gesTemp',temp)
+    //             if(temp<0){
+    //                 clearTimeout(heure) 
+    //                 socket.emit('gameHover')
+    //                 document.location.href='http://localhost:3000/'
+    //             } if(temp <= 300 && temp>= 295){
+    //                 prevention(texte)
+                
+    //             }
+           
+       
+    //         },1000);
+       
+       
+    //     //pour mettre l'horloge dans la barre de status :
+    //     //window.status = heure;
+   
+    //     timerActif = true;
+        
+    // }
+
+
    
 socket.on('admin',()=>{
     admis.innerText='vous avez ete admis'
