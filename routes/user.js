@@ -135,6 +135,7 @@ res.render('connection')
     }
     else{
         req.session.user=result.user
+        console.log("tait connecte",req.session.user)
 
         res.redirect('/game2')
     }    

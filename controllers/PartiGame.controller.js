@@ -32,6 +32,16 @@ exports.partiQueries = class{
         });
     }
 
+    static getOneGame(data){
+        return new Promise(async next => {
+             Game.findOne({Users:data}).then(game=>{
+                 next({etat:true,game:game});
+             }).catch(e => {
+                 next({etat:false,err:e});
+             })
+         });
+     }
+
     static getAllGame(){
         return new Promise(async next => {
             Game.find().then(games=>{
@@ -43,9 +53,26 @@ exports.partiQueries = class{
     }
     static updateGame(niveau,click,data){
         return new Promise(async next => {
-                Game.update({"_id":data},{$set:{"nclick":click,"niveau":niveau}}).then(jeux=>{
-                
+                Game.update({"_id":data},{$set:{"nclick":click,"niveau":niveau, 'niveaufinal':data-1}}).then(jeux=>{   
                  jeux.save()
+                }).catch(e => {
+                    next({etat:false,err:e});
+                })
+            });
+        }
+    static updateClickGame(data,click){
+        return new Promise(async next => {
+                Game.update({"_id":data},{$set:{"nclick":click}}).then(jeux=>{   
+                    jeux.save()
+                }).catch(e => {
+                    next({etat:false,err:e});
+                })
+            });
+        }
+    static updateAdminGame(){
+        return new Promise(async next => {
+                Game.update({"_id":data},{$set:{"admis":true}}).then(jeux=>{   
+                    jeux.save()
                 }).catch(e => {
                     next({etat:false,err:e});
                 })

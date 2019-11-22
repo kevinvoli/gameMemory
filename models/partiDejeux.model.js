@@ -10,7 +10,7 @@ SchemaUsers= new mongoose.Schema({
   SchemaJeuxCree= new mongoose.Schema({
       nom:{type: String},
       nbcareau:{type: Number, default:''},
-      nbniveau:{type: Number, default:''},
+      estadmin:{type:Number,required:true},
       description:{type: String, default:''},
       dure:{type:String},
       dateDebut:{type:String},
@@ -25,6 +25,7 @@ SchemaUsers= new mongoose.Schema({
   SchemaJeux= new mongoose.Schema({
     debut:{type:Date,default: new Date},
     fin:{type:Date},
+    admis:{type: Boolean, default:false},
     nclick:{type:Number},
     niveau: {type:Number},
     niveaufinal:{type:Number},

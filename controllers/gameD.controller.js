@@ -8,7 +8,7 @@ exports.gameDQueries = class{
             const game = await new Game({
                 nom:data.nom,
                 nbcareau:data.nbcaro,
-                nbniveau:data.niveau,
+                estadmin:data.niveau,
                 description:data.description,
                 dure:data.dure,
                 dateDebut:data.debut,
