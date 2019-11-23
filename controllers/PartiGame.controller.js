@@ -3,35 +3,31 @@ const Game = require('../models/partiDejeux.model').Jeux;
 
 exports.partiQueries = class{
 
-    static setGame(data, id,dure){
+    static setGame(data, id,dure,idNewGame){
         console.log(id)
         return new Promise(async next =>{
             await mongoose.connection.db.collection('memory_image_resultat',(err,game)=>{
-                game.date_fin= new Date().setMinutes(new Date().getMinutes()+dure);
-                game.nombre_click= 0
-                game.niveaux=1
-                game.niveaux_valide=(game.niveau-1)
-                game.game=data
-                game.user=id
-                game.save().then(user=>{
-                    next({etat:true,game:game});
+                game.insert({
+                    id:idNewGame+1,
+                    user_id:id,
+                    game_id:data,
+                    debut_game:new Date(),
+                    date_fin:Math.round(new Date().getTime()/1000)+dure,
+                    nombre_click:0,
+                    niveaux:1,
+                    niveaux_valide:0.0,
+                    a_valide:false,
+                    pourccentage:0,
+                    date_add:new Date(),
+                    date_udp:new Date(),
+                    status: true
+                }).then(game=>{
+                    next({etat:true,game:game.ops[0]});
                 }).catch(e => {
                     next({etat:false,err:e});
                 });
             })
-            // const game = await new Game({
-            // });
-            // game.fin= new Date().setMinutes(new Date().getMinutes()+dure);
-            // game.nclick= 0
-            // game.niveau=1
-            // game.niveaufinal=(game.niveau-1)
-            // game.Jeux=data.game._id
-            // game.Users=id
-            // game.save().then(user=>{
-            //     next({etat:true,game:game});
-            // }).catch(e => {
-            //     next({etat:false,err:e});
-            // });
+    
         });
     }
 
@@ -49,7 +45,7 @@ exports.partiQueries = class{
     static getOneGame(data){
         return new Promise(async next => {
             await mongoose.connection.db.collection('memory_image_resultat',(err,collection)=>{
-                collection.findOne({User:data}).then(game=>{
+                collection.findOne({user_id:data}).then(game=>{
                     if (game!==null) {
                         next({etat:true,game:game});
                     }
@@ -58,86 +54,64 @@ exports.partiQueries = class{
                     next({etat:false,err:e});
                 })
             })
-            // Game.findOne({Users:data}).then(game=>{
-            //     if (game!==null) {
-            //         next({etat:true,game:game});
-            //     }
-            //     next({etat:false,game:'user non valide'});
-            // }).catch(e => {
-            //     next({etat:false,err:e});
-            // })
+        
         });
     }
 
     static getAllGame(){
         return new Promise(async next => {
-            Game.find().populate('Jeux').then(games=>{
-                next({etat:true,games:games});
-            }).catch(e => {
-                next({etat:false,err:e});
+            await mongoose.connection.db.collection('memory_image_resultat',(err,collection)=>{
+                collection.find().toArray((err,game)=>{
+                    if (err) {
+                        next({etat:false,game:err})
+                    }else{
+              
+                        if (game.length>0) {
+                        next({etat:true,game:game,id:game[game.length-1].id})
+                        }else{
+                            next({etat:true,id:0})
+                        }
+                       
+                    }
+                
+                })
             })
+        
         });
     }
     static updateGame(niveau,click,data){
         return new Promise(async next => {
-                Game.update({"_id":data},{$set:{"nclick":click,"niveau":niveau, 'niveaufinal':niveau-1}}).then(jeux=>{   
-                jeux.save()
-                }).catch(e => {
-                    next({etat:false,err:e});
-                })
+            await mongoose.connection.db.collection('memory_image_resultat',(err,collection)=>{
+                collection.update({"id":data},{$set:{"nombre_click":click,"niveaux":niveau, 'niveaux_valide':niveau-1}}).then(jeux=>{   
+                    jeux.save()
+                    }).catch(e => {
+                        next({etat:false,err:e});
+                    })
+            })  
             });
         }
     static updateClickGame(data,click){
         return new Promise(async next => {
-                Game.update({"_id":data},{$set:{"nclick":click}}).then(jeux=>{   
+            await mongoose.connection.db.collection('memory_image_resultat',(err,collection)=>{
+                collection.update({"id":data},{$set:{"nombre_click":click}}).then(jeux=>{   
                     jeux.save()
                 }).catch(e => {
                     next({etat:false,err:e});
                 })
+            })
+              
             });
         }
     static updateAdminGame(data){
         return new Promise(async next => {
-                Game.update({"_id":data},{$set:{"admis":true}}).then(jeux=>{   
+            await mongoose.connection.db.collection('memory_image_resultat',(err,collection)=>{
+                collection.update({"id":data},{$set:{"admis":true}}).then(jeux=>{   
                     jeux.save()
                 }).catch(e => {
                     next({etat:false,err:e});
                 })
+            })
             });
         }
-
-    static setLevel(data){
-        return new Promise(async next =>{
-            const Niveau = {
-                niveau: data.niveau,
-                nbCase: data.nbCase,
-                caseVisible: data.caseVisible,
-                tempTransition: data.tempTransition,
-                tempAffichage: data.tempAffichage,
-                ordre: data.ordre,
-                heightDiv: data.heightDiv,
-                widthDiv: data.widthDiv
-            };
-            const game = await Game.findById(data.id);
-            game.levels.push(Niveau);
-            console.log(game.levels);
-            game.save().then(game=>{
-                next({etat:true,game:game});
-            }).catch(e => {
-                next({etat:false,err:e});
-            });
-        });
-    }
-
-
-    static getLevel(data){
-        return new Promise(async next =>{
-            Game.find().limit(1).then(games=>{
-                next({etat:true,level:games[0].levels[data]});
-            }).catch(e => {
-                next({etat:false,err:e});
-            });
-        });
-    }
 
 };

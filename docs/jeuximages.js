@@ -1,8 +1,6 @@
 
 const game = {
-    name: "jeux images",
-    description : "ceci est un jeux réalisé par la team JS",
-    duree: "00:45:00",
+
     niveaux: [
        {
         niveau: 1,
@@ -56,8 +54,6 @@ const game = {
             niveau: 7,
             nbCase: 32,
             findToValidate : 16,
-            timeAffiche: 920,
-            params: 100,
             nBimage: 16
         },
         {

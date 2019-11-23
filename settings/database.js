@@ -8,6 +8,12 @@ const connection = async () =>{
             useUnifiedTopology:true
         });
         console.log('connected to mongodb');
+
+    //   mongoose.connection.db.collection('memory_image_resultat',(err,collection)=>{
+    //         collection.deleteMany().then((err,jeux)=>{
+    //             console.log('ici BD',jeux)
+    //         })
+    //     })
     }catch(e){
         console.log("err"+e);
     }

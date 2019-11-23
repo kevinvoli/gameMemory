@@ -98,6 +98,7 @@ router.route('/admin')
     }else{
         console.log(req.body)
       
+        
         let data={
             nom:req.body.nom,
             nbcareau:req.body.nbcaro,

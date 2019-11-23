@@ -4,9 +4,9 @@ const mongoose = require('mongoose');
 SchemaUsers= new mongoose.Schema({
     name:{type:String},
     password: {type:String,require:true}
-    
+
   })
- 
+
   SchemaJeuxCree= new mongoose.Schema({
       nom:{type: String},
       nbcareau:{type: Number, default:''},
@@ -32,11 +32,9 @@ SchemaUsers= new mongoose.Schema({
     Users: { type:mongoose.Schema.ObjectId, ref:"User" },
     Jeux:{type:mongoose.Schema.ObjectId, ref:'jeuxCree-ref'}
   })
-  
+
   exports.User= mongoose.model('User',SchemaUsers) 
-  
 
   exports.JeucCree=mongoose.model('jeuxCree-ref',SchemaJeuxCree)
-
 
   exports.Jeux=mongoose.model('jeux-ref',SchemaJeux)

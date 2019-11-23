@@ -21,7 +21,7 @@ exports.userDQueries = class{
         return new Promise(async next =>{
             await mongoose.connection.db.collection('memory_usergame',(err,collection)=>{
                 collection.findOne({
-                    nom:data.name,
+                    username :data.name,
                     password:data.password
                 }).then(user=>{
                     next({etat:true,user:user});
