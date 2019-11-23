@@ -8,9 +8,8 @@ exports.levelQueries= class{
                     if (err) {
                         next({etat:false,level:err})
                     }else{
-              
                         if (game.length>0) {
-                        next({etat:true,level:level,id:level})
+                        next({etat:true,level:level})
                         }else{
                             next({etat:false,level:level})
                         }
@@ -18,12 +17,7 @@ exports.levelQueries= class{
                     }
                 })
             })
-            await mongoose.connection.co
-            Game.find().to(game=>{
-                next({etat:true,game:game});
-            }).catch(e => {
-                next({etat:false,err:e});
-            })
+           
         });
     }
 }
