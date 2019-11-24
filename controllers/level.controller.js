@@ -3,14 +3,17 @@ const mongoose= require('mongoose')
 exports.levelQueries= class{
      static getAllLevel(){
         return new Promise(async next => {
+            console.log("jz suis dedans")
+            
             await mongoose.connection.db.collection('memory_levelgame',(err,collection)=>{
                 collection.find().toArray((err,level)=>{
+                    console.log("jz suis dedans",level)
                     if (err) {
                         next({etat:false,level:err})
                     }else{
               
-                        if (game.length>0) {
-                        next({etat:true,level:level,id:level})
+                        if (level.length>0) {
+                        next({etat:true,levels:level})
                         }else{
                             next({etat:false,level:level})
                         }
@@ -18,12 +21,7 @@ exports.levelQueries= class{
                     }
                 })
             })
-            await mongoose.connection.co
-            Game.find().to(game=>{
-                next({etat:true,game:game});
-            }).catch(e => {
-                next({etat:false,err:e});
-            })
+         
         });
     }
 }

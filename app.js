@@ -11,6 +11,8 @@ const {functions} = require('./controllers/random');
 
 const {gameDQueries} = require('./controllers/gameD.controller');
 const {partiQueries} = require('./controllers/PartiGame.controller');
+const {levelQueries} = require('./controllers/level.controller');
+
 
 db();
 const io = require('socket.io')(http);
@@ -119,7 +121,8 @@ const images = [
 ];
 // let liste = partiQueries.getAllGame()
 // console.log("par possible",liste)
-let parametre= require('./docs/jeuximages')
+// let parametre= require('./docs/jeuximages')
+let parametre
 let temps
 let dure
 let nclick
@@ -133,11 +136,15 @@ let info = {},Images = [],resu = [];
 const memory2 = io.of('/game2').use(serveur.getSharedSession());
 memory2.on('connection',async(socket)=>{
     let jeuxCree= await gameDQueries.getGameOne('Test 2')
+   let listLevel= await levelQueries.getAllLevel()
+   parametre=listLevel.levels
+    console.log("ICI SONT STOQUET LES NIVEAU",  parametre)
 
     let dure = jeuxCree.game.duree_game.split(':')
     let duree= parseInt(dure[0])*3600+ parseInt(dure[1]*60+parseInt(dure[2]))
 
     console.log('tu est la quoi zooo',jeuxCree)
+    console.log('tu est la quoi zooo',duree)
     let liste = await partiQueries.getAllGame()
     let indexGame=liste.id
 
@@ -146,13 +153,16 @@ memory2.on('connection',async(socket)=>{
     if(socket.handshake.session.user){
 
         socket.on('startgame',async()=>{
+       
             let verif= await partiQueries.getOneGame(socket.handshake.session.user.id)
             console.log('verifition de l user',verif)
             if( socket.handshake.session.temp || socket.handshake.session.score ){
                 console.log("OUI JE VOIT",socket.handshake.session.score)
+                console.log('le TEMPS',socket.handshake.session.temp-Math.round(new Date().getTime()/1000))
+
                 temps=socket.handshake.session.temp
                 nclick=socket.handshake.session.click
-                info= parametre.niveaux[verif.game.niveaux]
+                info= parametre[verif.game.niveaux]
                 console.log("OUI JE VOIT",temps)
             }else{
                 if (verif.etat!==false) {
@@ -164,10 +174,19 @@ memory2.on('connection',async(socket)=>{
                         minutes:new Date(time).getMinutes(),
                         seconds:new Date(time).getSeconds()
                     };
+                    console.log('leTEMPSS',(verif.game.date_fin-Math.round(new Date().getTime()/1000) ) )
+
+
+                    // socket.handshake.session.temp =  Math.round(new Date().getTime()/1000)+20;
+                    // socket.handshake.session.save();
+                    // minut=socket.handshake.session.temp-Math.round(new Date().getTime()/1000)
+                    // info = memoryGame.niveaux[0];
+                    // console.log(info);
+
                     socket.handshake.session.save();
                     nclick=verif.game.nclick
                     temps=socket.handshake.session.temp
-                    info = parametre.niveaux[verif.game.niveaux];
+                    info = parametre[verif.game.niveaux];
                 }else{
 
                     console.log("ICI C;EST LE TEMPS",socket.handshake.session.user.id)
@@ -177,21 +196,22 @@ memory2.on('connection',async(socket)=>{
                     socket.handshake.session.temp = socket.handshake.session.Jeux.game.date_fin
                     socket.handshake.session.save();
                     nclick=0
+                    console.log(socket.handshake.session.temp-Math.round(new Date().getTime()/1000))
                     temps={
                         minutes:new Date( socket.handshake.session.temp).getMinutes(),
                         seconds:new Date( socket.handshake.session.temp).getSeconds()
                     }
-                        parametre.niveaux.forEach(niveaux=>{
+                        parametre.forEach(niveaux=>{
                             if (niveaux.nbCase==jeuxCree.game.nombre_careaux){
                                 console.log(niveaux.niveau);
                                 index =  niveaux.niveau
                             }
                         })
-                    info = parametre.niveaux[0];
+                    info = parametre[0];
                 }
             }
             console.log(temps)
-            Images = functions.setImage(images,info.nBimage);
+            Images = functions.setImage(images,info.case_visible/2);
             resu = functions.random(Images,info.params);
             socket.emit('startgame',resu,info,temps,nclick,texte);
         });
@@ -211,17 +231,18 @@ memory2.on('connection',async(socket)=>{
         })
         let validee=jeuxCree.game.estadmin
          let valid=0
+         
         socket.on('nextlevel',async(data,click)=>{
         console.log(click)
             await  partiQueries.updateGame(data,click,socket.handshake.session.Jeux.game.id)
             socket.handshake.session.click = click
             socket.handshake.session.save()
             nclick+= socket.handshake.session.click
-            info = parametre.niveaux[data];
+            info = parametre[data];
             socket.handshake.session.score = info
             socket.handshake.session.save()
-            Images = functions.setImage(images,info.nBimage);
-            resu = functions.random(Images,info.params);
+            Images = functions.setImage(images,info.case_visible/2);
+            resu = functions.random(Images);
             valid+=1
             socket.emit('nextlevel',resu,info);
             if(valid===validee){

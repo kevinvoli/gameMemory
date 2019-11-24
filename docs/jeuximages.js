@@ -150,7 +150,7 @@ const game = {
             findToValidate : 96,
             timeAffiche: 580,
             params: 60,
-            nBimage: 90
+            nBimage: 96
         },
         {
             niveau: 20,
@@ -158,7 +158,7 @@ const game = {
             findToValidate : 105,
             timeAffiche: 580,
             params: 60,
-            nBimage: 90
+            nBimage: 105
         },
         {
             niveau: 21,
@@ -166,7 +166,7 @@ const game = {
             findToValidate : 113,
             timeAffiche: 580,
             params: 60,
-            nBimage: 90
+            nBimage: 113
         },
         {
             niveau: 22,
@@ -174,7 +174,7 @@ const game = {
             findToValidate : 120,
             timeAffiche: 580,
             params: 60,
-            nBimage: 90
+            nBimage: 120
         }
     ]
 };
