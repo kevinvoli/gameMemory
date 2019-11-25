@@ -17,7 +17,7 @@ exports.partiQueries = class{
                     niveaux:1,
                     niveaux_valide:0.0,
                     a_valide:false,
-                    pourccentage:0,
+                    pourccentage:0.0,
                     date_add:new Date(),
                     date_udp:new Date(),
                     status: true

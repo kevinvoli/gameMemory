@@ -1,5 +1,5 @@
 exports.functions = class{
-    static random(images,params){
+    static random(images,params=60){
         let verif_El = [];
         const output = [];
         for(let i = 0; i < images.length*2; i++){
