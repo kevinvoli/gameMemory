@@ -14,7 +14,7 @@ const connection = async () =>{
     //             console.log('ici BD',jeux)
     //         })
     //     })
-    // mongoose.connection.db.collection('memory_levelgame',(err,collection)=>{
+    // mongoose.connection.db.collection('memory_image_levelgame',(err,collection)=>{
     //     collection.find().toArray((err,niveau)=>{
     //         console.log("BASE",niveau)
     //     })

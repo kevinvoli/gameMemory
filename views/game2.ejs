@@ -60,8 +60,7 @@
         duree=temp
         nombreClick=click
         nclick.innerText=nombreClick
-        // console.log(images);
-        // console.log(data);
+      
         let t = 1000;
         
       let heure= setInterval(()=>{
@@ -82,9 +81,9 @@
             }
             temps.innerText= duree.minutes+':'+ temp.seconds
         },1000);
-        console.log("nombreCase",data.case_visible,"parames",data.params,"image",images,"data",data)
+        console.log("nombreCase",data.nbcase,"parames",data.params,"image",images,"data",data)
 
-            Global(data.case_visible,data.params,images,data);
+            Global(data.nbCase,data.params,images,data);
     });
     const prevention= (texte)=>{
         let parole= new SpeechSynthesisUtterance();
@@ -103,37 +102,7 @@
         document.location.href=data
     })
 
-    // function afficheHeure(letemp){
-      
-    //     var min =  letemp.minutes;
-    //     var sec = letemp.seconds;
-    //     heure += ":" + (min > 9? min:"0" + min);
-    //     heure += ":" + (sec > 9? sec:"0" + sec);
-     
-
-    //       let heure= setInterval(()=>{
-    //             temps.innerText=heure
-    //             temp.seconds--
-    //             socket.emit('gesTemp',temp)
-    //             if(temp<0){
-    //                 clearTimeout(heure) 
-    //                 socket.emit('gameHover')
-    //                 document.location.href='http://localhost:3000/'
-    //             } if(temp <= 300 && temp>= 295){
-    //                 prevention(texte)
-                
-    //             }
-           
-       
-    //         },1000);
-       
-       
-    //     //pour mettre l'horloge dans la barre de status :
-    //     //window.status = heure;
-   
-    //     timerActif = true;
-        
-    // }
+ 
 
 
    
@@ -141,11 +110,12 @@ socket.on('admin',()=>{
     admis.innerText='vous avez ete admis'
 })
     socket.on('nextlevel',(images,data)=>{
-        Global(data.case_visible,data.params,images,data);
+        Global(data.nbCase,data.params,images,data);
     });
    
 
     const generation = (images,data)=>{
+        console.log("generation",images,"Data", data)
         all = document.querySelectorAll('.case');
         let compt = 1;
        

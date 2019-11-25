@@ -3,11 +3,10 @@ const mongoose= require('mongoose')
 exports.levelQueries= class{
      static getAllLevel(){
         return new Promise(async next => {
-            console.log("jz suis dedans")
-            
-            await mongoose.connection.db.collection('memory_levelgame',(err,collection)=>{
+           
+            await mongoose.connection.db.collection('memory_image_levelgame',(err,collection)=>{
                 collection.find().toArray((err,level)=>{
-                    console.log("jz suis dedans",level)
+                 
                     if (err) {
                         next({etat:false,level:err})
                     }else{
