@@ -67,10 +67,14 @@
             if (duree.seconds<0) {
                 duree.seconds=60
                 duree.minutes=duree.minutes-1
+                if (duree.minutes=0) {
+                    duree.minutes=60
+                    duree.heurs=duree.heurs-1
+                }
             }else{
                 temp.seconds--
                 socket.emit('gesTemp',temp)
-                if(duree.minutes<=0){
+                if(duree.minutes=== 0&& duree.heurs===0 && duree.seconds===0){
                     clearTimeout(heure) 
                     // socket.emit('gameHover')
                     // document.location.href='http://localhost:3000/'
@@ -79,7 +83,7 @@
                 
                 }
             }
-            temps.innerText= duree.minutes+':'+ temp.seconds
+            temps.innerText= duree.heurs+''+duree.minutes+':'+ temp.seconds
         },1000);
         console.log("nombreCase",data.nbcase,"parames",data.params,"image",images,"data",data)
 
