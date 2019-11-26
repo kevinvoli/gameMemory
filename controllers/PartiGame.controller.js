@@ -4,7 +4,7 @@ const Game = require('../models/partiDejeux.model').Jeux;
 exports.partiQueries = class{
 
     static setGame(data, id,dure,idNewGame){
-        console.log(id)
+        console.log("DUREE",dure)
         return new Promise(async next =>{
             await mongoose.connection.db.collection('memory_image_resultat',(err,game)=>{
                 game.insert({
@@ -12,12 +12,12 @@ exports.partiQueries = class{
                     user_id:id,
                     game_id:data,
                     debut_game:new Date(),
-                    date_fin:Math.round(new Date().getTime()/1000)+dure,
+                    date_fin: new Date(new Date().setMinutes(new Date().getMinutes()+dure)),
                     nombre_click:0,
                     niveaux:1,
                     niveaux_valide:0.0,
                     a_valide:false,
-                    pourccentage:0,
+                    pourccentage:0.0,
                     date_add:new Date(),
                     date_udp:new Date(),
                     status: true

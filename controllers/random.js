@@ -1,5 +1,5 @@
 exports.functions = class{
-    static random(images,params){
+    static random(images,params=60){
         let verif_El = [];
         const output = [];
         for(let i = 0; i < images.length*2; i++){
@@ -30,5 +30,23 @@ exports.functions = class{
         return output;
     }
 
+    static gettimes(time){
+
+        console.log("Time::",time)
+        var h=  Math.floor(time/3600);
+        time -= (h*3600)
+        var m=  Math.floor(time/60);
+        time -= m*60  
+       var  s=  Math.floor(time);
+       time -= s*1
+       let temp = {
+           heurs:h,
+           minutes:m,
+           seconds:s
+       };
+
+
+        return temp
+    }
 
 };
